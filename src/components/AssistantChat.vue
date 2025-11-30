@@ -130,19 +130,11 @@ const messagesContainer = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
 const suggestions = [
-  'Help me organize my contacts',
-  'Find duplicate contacts',
-  'Export my contacts to CSV',
+  'Help me send an email',
   'Show contacts added this week'
 ]
 
 const closeChat = () => {
-  // isOpen.value = false
-  assistantStore.closeChat()
-}
-
-const minimizeChat = () => {
-  // isOpen.value = false
   assistantStore.closeChat()
 }
 
