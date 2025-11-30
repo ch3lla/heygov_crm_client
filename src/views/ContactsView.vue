@@ -38,11 +38,28 @@ onMounted(() => {
   flex-direction: column;
   gap: 16px;
   height: 100%;
+  padding: 16px;
 }
 
 .contacts-content {
   flex: 1;
   overflow: auto;
+  min-width: 0; /* Prevent overflow */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contacts-view {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contacts-view {
+    padding: 8px;
+    gap: 8px;
+  }
 }
 </style>
 

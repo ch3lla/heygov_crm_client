@@ -124,8 +124,8 @@ const confirmDelete = async () => {
 }
 
 .row.selected {
-  background: var(--soft-blue);
-  border-color: var(--accent);
+  background: var(--soft-purple);
+  border-color: var(--primary);
 }
 
 .checkbox {
@@ -157,7 +157,7 @@ const confirmDelete = async () => {
 
 .initials {
   font-weight: 600;
-  color: var(--accent);
+  color: var(--primary);
 }
 
 .info-section {
@@ -197,10 +197,11 @@ const confirmDelete = async () => {
 .notes {
   flex: 1;
   min-width: 0;
+  max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--muted);
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -208,5 +209,72 @@ const confirmDelete = async () => {
   flex-shrink: 0;
   width: 40px;
   text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .notes {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .notes {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .row {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+  
+  .row-content {
+    gap: 8px;
+  }
+  
+  .phone {
+    display: none;
+  }
+  
+  .company {
+    flex: 0 0 100px;
+  }
+  
+  .info-section {
+    flex: 0 0 160px;
+  }
+}
+
+@media (max-width: 640px) {
+  .company {
+    display: none;
+  }
+  
+  .info-section {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .avatar-container {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .checkbox {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .row {
+    padding: 8px 6px;
+  }
+  
+  .email {
+    font-size: 12px;
+  }
 }
 </style>

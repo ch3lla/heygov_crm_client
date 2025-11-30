@@ -58,7 +58,6 @@
               <div class="message-avatar">🤖</div>
               <div class="message-content">
                 <div class="loading-bubble">
-                  <!-- <div class="bubble-text">{{ loadingText }}</div> -->
                   <div class="bubble-dots">
                     <span></span>
                     <span></span>
@@ -241,6 +240,7 @@ watch(isOpen, (newVal) => {
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  max-width: 100%;
 }
 
 /* Header */
@@ -323,11 +323,13 @@ watch(isOpen, (newVal) => {
 .chat-messages {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
   background: #f9fafb;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: 100%;
 }
 
 .empty-state {
@@ -376,6 +378,8 @@ watch(isOpen, (newVal) => {
   display: flex;
   gap: 12px;
   animation: fadeIn 0.3s ease-out;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .message.user {
@@ -400,6 +404,7 @@ watch(isOpen, (newVal) => {
 
 .message-content {
   max-width: 75%;
+  min-width: 0;
 }
 
 .message.user .message-content {
@@ -416,6 +421,9 @@ watch(isOpen, (newVal) => {
   font-size: 14px;
   line-height: 1.5;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
@@ -432,10 +440,19 @@ watch(isOpen, (newVal) => {
 /* Markdown content styling */
 .markdown-content {
   line-height: 1.6;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-content * {
+  max-width: 100%;
 }
 
 .markdown-content p {
   margin: 0 0 8px 0;
+  overflow-wrap: break-word;
 }
 
 .markdown-content p:last-child {
@@ -456,6 +473,8 @@ watch(isOpen, (newVal) => {
   border-radius: 4px;
   font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
   font-size: 13px;
+  word-break: break-all;
+  max-width: 100%;
 }
 
 .message.user .markdown-content code {
@@ -468,11 +487,14 @@ watch(isOpen, (newVal) => {
   border-radius: 6px;
   overflow-x: auto;
   margin: 8px 0;
+  max-width: 100%;
 }
 
 .markdown-content pre code {
   background: none;
   padding: 0;
+  white-space: pre;
+  word-break: normal;
 }
 
 .markdown-content ul,
@@ -531,7 +553,7 @@ watch(isOpen, (newVal) => {
 /* Loading bubble */
 .loading-bubble {
   padding: 12px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg,rgb(205, 210, 236) 0%,rgb(212, 184, 241) 100%);
   border-radius: 12px;
   border-bottom-left-radius: 4px;
   display: flex;
@@ -711,6 +733,21 @@ watch(isOpen, (newVal) => {
 }
 
 /* Mobile responsive */
+@media (max-width: 768px) {
+  .chat-container {
+    width: 360px;
+    max-width: calc(100vw - 32px);
+  }
+  
+  .message-content {
+    max-width: 80%;
+  }
+  
+  .chat-messages {
+    padding: 16px;
+  }
+}
+
 @media (max-width: 640px) {
   .chat-container {
     bottom: 90px;
@@ -718,6 +755,42 @@ watch(isOpen, (newVal) => {
     left: 12px;
     width: auto;
     max-width: none;
+    height: 500px;
+  }
+  
+  .message-content {
+    max-width: 85%;
+  }
+  
+  .chat-header {
+    padding: 12px 16px;
+  }
+  
+  .chat-messages {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .chat-input {
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-container {
+    height: 450px;
+  }
+  
+  .message-content {
+    max-width: 90%;
+  }
+  
+  .header-info h3 {
+    font-size: 15px;
+  }
+  
+  .status {
+    font-size: 11px;
   }
 }
 </style>

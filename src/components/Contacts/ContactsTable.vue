@@ -29,3 +29,39 @@ defineProps({ view: { type: String, default: 'list' }})
 const store = useContactStore()
 const filteredContacts = computed(()=> store.filteredContacts)
 </script>
+
+<style scoped>
+.table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+  .grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-view {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+</style>

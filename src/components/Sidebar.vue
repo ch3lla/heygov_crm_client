@@ -13,25 +13,34 @@ import { RouterLink } from 'vue-router'
 </script>
 
 <style scoped>
-h3{color:var(--accent)}
-.small{
-  background:transparent;
-  border:none;
-  text-align:left;
-  padding:8px;
-  border-radius:6px;
-  cursor:pointer;
-  text-decoration:none;
-  color:inherit;
-  display:block;
-  transition: transform 0.2s ease;
+h3 {
+  color: var(--primary);
+  font-weight: 700;
+  margin-top: 0;
 }
-.small:hover{
-  background:var(--soft-blue);
-  transform: scale(1.05);
+
+.small {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
-.small.router-link-active{
-  background:var(--soft-blue);
-  font-weight:600;
+
+.small:hover {
+  background: var(--soft-purple);
+  transform: translateX(4px);
+}
+
+.small.router-link-active {
+  background: var(--soft-purple);
+  color: var(--primary);
+  font-weight: 600;
 }
 </style>

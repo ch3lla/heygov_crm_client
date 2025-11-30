@@ -429,4 +429,74 @@ onUnmounted(() => {
   opacity: 1;
   transform: translateX(0);
 }
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .search-input {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .view-switcher {
+    display: none;
+  }
+  
+  .search-input {
+    min-width: 150px;
+  }
+  
+  .add-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 640px) {
+  .custom-dropdown .sort-select {
+    padding: 4px 20px 4px 8px;
+    font-size: 12px;
+  }
+  
+  .search-input {
+    min-width: 120px;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  
+  .add-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .trash-btn {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+  }
+  
+  .user-avatar .avatar-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-btn span {
+    display: none;
+  }
+  
+  .add-btn::after {
+    font-size: 18px;
+  }
+  
+  .search-input {
+    min-width: 100px;
+  }
+  
+  .small {
+    font-size: 11px;
+  }
+}
 </style>
