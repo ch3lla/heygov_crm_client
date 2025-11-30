@@ -38,7 +38,7 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Move {{ contactStore.selectedCount }} to Trash
+          <!-- Move to Trash -->
         </button>
       </Transition>
 
@@ -142,25 +142,27 @@ const handleBulkDelete = () => {
 }
 
 const confirmBulkDelete = async () => {
-  // Delete immediately from UI (optimistic)
-  const result = await contactStore.bulkDelete(true)
+  // Get the IDs before clearing selection
+  const idsToDelete = Array.from(contactStore.selectedIds);
+  if (idsToDelete.length === 0) return;
+
+  // Remove from UI immediately and store backup
+  contactStore.bulkDeleteOptimistic(idsToDelete);
+
+  // Show toast with undo button
+  toast.deleteWithUndo(
+    `${idsToDelete.length} contact(s) moved to trash`,
+    () => {
+      // Undo: restore contacts
+      contactStore.undoBulkDelete(idsToDelete);
+    },
+    5000
+  )
   
-  if (result.count > 0) {
-    // Show toast with undo button
-    toast.deleteWithUndo(
-      `${result.count} contact(s) moved to trash`,
-      () => {
-        // Undo: restore contacts
-        contactStore.undoBulkDelete(result.ids)
-      },
-      5000
-    )
-    
-    // After 5 seconds, actually delete on server
-    setTimeout(async () => {
-      await contactStore.bulkDelete(false)
-    }, 5000)
-  }
+  // After 5 seconds, actually delete on server
+  setTimeout(async () => {
+    await contactStore.bulkDelete(idsToDelete)
+  }, 5000)
 }
 
 const handleClickOutside = (event: MouseEvent) => {
