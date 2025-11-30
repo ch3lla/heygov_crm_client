@@ -77,8 +77,7 @@ const handleRowClick = () => {
 }
 
 const handleEdit = () => {
-  // TODO: Implement edit functionality
-  toast.info('Edit functionality coming soon!')
+  contactStore.openContactDetail(props.contact, true)
 }
 
 const handleDelete = () => {

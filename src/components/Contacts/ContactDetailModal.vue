@@ -229,7 +229,8 @@ watch(() => contactStore.selectedContact, (newContact) => {
       company: newContact.company || '',
       notes: newContact.notes || ''
     }
-    isEditMode.value = false
+    // Set edit mode based on store flag
+    isEditMode.value = contactStore.openInEditMode
   }
 }, { immediate: true })
 

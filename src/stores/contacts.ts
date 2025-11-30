@@ -27,6 +27,7 @@ export const useContactStore = defineStore('contacts', () => {
     
     const showContactDetail = ref(false);
     const selectedContact = ref<IContact | null>(null);
+    const openInEditMode = ref(false); // Flag to open modal in edit mode
     const deletedContactsBackup = ref<IContact[]>([]); // For undo functionality
     
     // Trash state
@@ -73,14 +74,16 @@ export const useContactStore = defineStore('contacts', () => {
         _selectedIds.value = new Set();
     };
 
-    const openContactDetail = (contact: IContact) => {
+    const openContactDetail = (contact: IContact, editMode = false) => {
         selectedContact.value = contact;
+        openInEditMode.value = editMode;
         showContactDetail.value = true;
     };
 
     const closeContactDetail = () => {
         showContactDetail.value = false;
         selectedContact.value = null;
+        openInEditMode.value = false;
     };
 
     // Filtered contacts based on search query
@@ -225,21 +228,22 @@ export const useContactStore = defineStore('contacts', () => {
         }
     };
 
-    // 6. Bulk Delete (Move multiple to trash) with undo support
-    const bulkDelete = async (skipApi = false) => {
-        const idsToDelete = Array.from(selectedIds.value);
-        if (idsToDelete.length === 0) return { count: 0, ids: [] };
+    // Optimistic bulk delete - just remove from UI, no API call
+    const bulkDeleteOptimistic = (idsToDelete: number[]) => {
+        if (idsToDelete.length === 0) return;
 
-        // Backup and remove from UI immediately
+        // Backup and remove from UI
         const backupContacts = contacts.value.filter(c => idsToDelete.includes(c.id));
         contacts.value = contacts.value.filter(c => !idsToDelete.includes(c.id));
         deletedContactsBackup.value.push(...backupContacts);
         clearSelection();
+    };
 
-        if (skipApi) {
-            return { count: idsToDelete.length, ids: idsToDelete };
-        }
+    // 6. Bulk Delete (Move multiple to trash) - API call only
+    const bulkDelete = async (idsToDelete: number[]) => {
+        if (idsToDelete.length === 0) return { count: 0, ids: [] };
 
+        // Call API to actually delete
         loading.value = true;
         const results = await Promise.allSettled(
             idsToDelete.map(id => apiClient.patch(`/contacts/remove/${id}`))
@@ -255,11 +259,12 @@ export const useContactStore = defineStore('contacts', () => {
             c => !successfulIds.includes(c.id)
         );
 
-        // Restore failed ones
+        // Restore failed ones to UI
         const failedIds = idsToDelete.filter(id => !successfulIds.includes(id));
-        const failedContacts = backupContacts.filter(c => failedIds.includes(c.id));
-        if (failedContacts.length > 0) {
+        if (failedIds.length > 0) {
+            const failedContacts = deletedContactsBackup.value.filter(c => failedIds.includes(c.id));
             contacts.value.push(...failedContacts);
+            deletedContactsBackup.value = deletedContactsBackup.value.filter(c => !failedIds.includes(c.id));
         }
 
         loading.value = false;
@@ -377,6 +382,7 @@ export const useContactStore = defineStore('contacts', () => {
     hasSelected,
     showContactDetail,
     selectedContact,
+    openInEditMode,
     contactCount,
     filteredContacts,
     setView,
@@ -391,6 +397,7 @@ export const useContactStore = defineStore('contacts', () => {
     deleteContact,
     undoDelete,
     bulkDelete,
+    bulkDeleteOptimistic,
     undoBulkDelete,
     sortContacts,
     // Trash
