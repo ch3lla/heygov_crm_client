@@ -35,32 +35,22 @@
           </div>
         </div>
       </div>
-
-      <!-- <ConfirmModal
-      ref="confirmModal"
-      title="Move to Trash"
-      :message="`Are you sure you want to restore this contact?`"
-      confirm-text="Move to Trash"
-      variant="danger"
-      @confirm="handleBulkRestore"
-    /> -->
     </div>
   </template>
   
   <script setup lang="ts">
   import { onMounted } from 'vue';
   import { useContactStore } from '@/stores/contacts';
-  import { toast } from '@/utils/toast'; // Assuming you have this utility based on TrashRow
+  import { toast } from '@/utils/toast';
   import MainHeader from '@/components/MainHeader.vue';
   import TrashRow from '@/components/Contacts/TrashRow.vue';
-//   import ConfirmModal from '@/components/ConfirmModal.vue';
   
   const contactStore = useContactStore()
   
   const handleBulkRestore = async () => {
     const result = await contactStore.bulkRestoreFromTrash()
     if (result.count > 0) {
-      toast.successWithUndo(`Successfully restored ${result.count == 1 ? 'contact' : `${result.count} contacts`}`)
+      toast.success(`Successfully restored ${result.count == 1 ? 'contact' : `${result.count} contacts`}`)
     } else {
       toast.error('Failed to restore contacts')
     }
