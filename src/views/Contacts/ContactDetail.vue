@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { store } from '../../store/contacts'
+import { store } from '../../stores/contacts'
 
 const route = useRoute()
 const id = Number(route.params.id)
