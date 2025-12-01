@@ -79,7 +79,7 @@ Manages soft-deleted contacts with bulk restore capabilities.
     * `TrashRow.vue`: Represents a deleted contact with options to restore it.
     * `ConfirmModal.vue`: A reusable modal triggered when confirming actions (used globally across the app).
 
-## 🛠 State Management (Pinia)
+## State Management (Pinia)
 The app uses three main stores:
 1.  **Auth Store (`auth.ts`)**: Manages JWT tokens, login/register logic, and user profile state. Persists to LocalStorage.
 2.  **Contacts Store (`contacts.ts`)**: Handles fetching, filtering, sorting, CRUD operations, and optimistic UI updates for contacts and trash. Persists to LocalStorage.
