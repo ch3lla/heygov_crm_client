@@ -331,6 +331,7 @@ const handleSave = async () => {
         ...editForm.value
       }
     }
+    contactStore.closeContactDetail()
   } else {
     toast.error('Failed to update contact')
   }
