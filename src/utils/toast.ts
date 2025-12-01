@@ -3,14 +3,14 @@ import { createToast } from 'vercel-toast'
 export const toast = {
   success: (message: string) => {
     return createToast(message, {
-      timeout: 5000
+      timeout: 3000
     })
   },
 
   error: (message: string) => {
     return createToast(message, {
       type: 'error',
-      timeout: 7000
+      timeout: 5000
     })
   },
 
