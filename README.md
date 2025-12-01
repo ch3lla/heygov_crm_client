@@ -29,6 +29,14 @@ A mini Customer Relationship Management (CRM) frontend built with Vue 3, Vite, a
     npm run build
     ```
 
+### Running Tests
+
+This project uses Vitest for unit testing:
+
+```sh
+npm run test:unit
+```
+
 ## Architecture & Component Map
 
 The application is structured around **Views** (Pages handled by the Router) and **Components** (Reusable UI elements).
