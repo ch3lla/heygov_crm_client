@@ -10,5 +10,10 @@ export default mergeConfig(
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
     },
+    preview: {
+      host: true,
+      port: 4000,
+      allowedHosts: ['mini-crm.up.railway.app']
+    }
   }),
 )
