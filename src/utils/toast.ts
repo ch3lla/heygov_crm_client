@@ -3,20 +3,38 @@ import { createToast } from 'vercel-toast'
 export const toast = {
   success: (message: string) => {
     return createToast(message, {
-      timeout: 3000
+      timeout: 3000,
+      action: {
+        text: '✕',
+        callback: (toast) => {
+          toast.destroy()
+        }
+      }
     })
   },
 
   error: (message: string) => {
     return createToast(message, {
       type: 'error',
-      timeout: 5000
+      timeout: 5000,
+      action: {
+        text: '✕',
+        callback: (toast) => {
+          toast.destroy()
+        }
+      }
     })
   },
 
   info: (message: string) => {
     return createToast(message, {
-      timeout: 5000
+      timeout: 5000,
+      action: {
+        text: '✕',
+        callback: (toast) => {
+          toast.destroy()
+        }
+      }
     })
   },
 
@@ -33,7 +51,8 @@ export const toast = {
           onUndo()
           toast.destroy()
         }
-      }
+      },
+      cancel: '✕' // Add close button alongside undo
     })
   }
 }

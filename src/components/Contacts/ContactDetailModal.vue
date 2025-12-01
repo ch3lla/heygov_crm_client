@@ -334,6 +334,7 @@ const handleSave = async () => {
     contactStore.closeContactDetail()
   } else {
     toast.error('Failed to update contact')
+    contactStore.closeContactDetail()
   }
 }
 
