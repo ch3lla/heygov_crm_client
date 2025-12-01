@@ -22,14 +22,21 @@
 
     <div class="actions">
       <div class="menu-container" @click.stop>
-        <button class="menu-btn" @click="isMenuOpen = !isMenuOpen">⋯</button>
-        <Transition name="dropdown">
-          <div v-if="isMenuOpen" class="context-menu" ref="menuRef">
-            <button @click="handleRestore" class="menu-item">
-              Restore
-            </button>
-          </div>
-        </Transition>
+        <button class="menu-btn" @click="toggleMenu" ref="triggerRef">⋯</button>
+        <Teleport to="body">
+          <Transition name="dropdown">
+            <div 
+              v-if="isMenuOpen" 
+              class="context-menu" 
+              ref="menuRef"
+              :style="menuStyle"
+            >
+              <button @click="handleRestore" class="menu-item">
+                Restore
+              </button>
+            </div>
+          </Transition>
+        </Teleport>
       </div>
     </div>
 
@@ -57,6 +64,13 @@ const contactStore = useContactStore()
 const confirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const isMenuOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
+const triggerRef = ref<HTMLButtonElement | null>(null)
+const menuPosition = ref({ top: 0, left: 0 })
+
+const menuStyle = computed(() => ({
+  top: `${menuPosition.value.top}px`,
+  left: `${menuPosition.value.left}px`
+}))
 
 const truncatedNotes = computed(() => {
   if (!props.contact.notes) return ''
@@ -64,6 +78,38 @@ const truncatedNotes = computed(() => {
     ? props.contact.notes.substring(0, 100) + '...' 
     : props.contact.notes
 })
+
+const calculatePosition = () => {
+  if (!triggerRef.value) return
+
+  const rect = triggerRef.value.getBoundingClientRect()
+  const menuWidth = 140
+  const menuHeight = 50
+  
+  let top = rect.bottom + 4
+  let left = rect.right - menuWidth
+  
+  if (left < 8) {
+    left = 8
+  }
+  
+  if (left + menuWidth > window.innerWidth - 8) {
+    left = window.innerWidth - menuWidth - 8
+  }
+  
+  if (top + menuHeight > window.innerHeight - 8) {
+    top = rect.top - menuHeight - 4
+  }
+  
+  menuPosition.value = { top, left }
+}
+
+const toggleMenu = () => {
+  if (!isMenuOpen.value) {
+    calculatePosition()
+  }
+  isMenuOpen.value = !isMenuOpen.value
+}
 
 const handleRestore = () => {
   isMenuOpen.value = false
@@ -91,6 +137,16 @@ const handleClickOutside = (event: MouseEvent) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  window.addEventListener('scroll', () => {
+    if (isMenuOpen.value) {
+      calculatePosition()
+    }
+  }, true)
+  window.addEventListener('resize', () => {
+    if (isMenuOpen.value) {
+      calculatePosition()
+    }
+  })
 })
 
 onUnmounted(() => {
@@ -176,46 +232,46 @@ onUnmounted(() => {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  color: #6b7280;
+  color: var(--text-muted);
   transition: all 0.2s;
 }
 
 .menu-btn:hover {
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: var(--soft-purple);
+  color: var(--primary);
 }
 
 .context-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  margin-top: 4px;
+  position: fixed;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   min-width: 160px;
-  z-index: 1000;
+  padding: 4px;
+  z-index: 9999;
   overflow: hidden;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  padding: 10px 16px;
+  padding: 8px 12px;
   background: none;
   border: none;
   text-align: left;
   font-size: 14px;
-  color: #374151;
+  color: var(--text);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.15s ease;
+  border-radius: 6px;
 }
 
 .menu-item:hover {
-  background-color: #f9fafb;
+  background-color: var(--soft-purple);
+  color: var(--primary);
 }
 
 .menu-item .icon {
