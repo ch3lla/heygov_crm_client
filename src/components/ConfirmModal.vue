@@ -1,35 +1,37 @@
 <template>
-  <Transition name="modal">
-    <div v-if="isOpen" class="modal-backdrop" @click="handleCancel">
-      <div class="confirm-modal" @click.stop>
-        <div class="modal-icon" :class="variant">
-          <svg v-if="variant === 'danger'" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M3 6h18M5 6v12a2 2 0 002 2h10a2 2 0 002-2V6m-4 0V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="isOpen" class="modal-backdrop" @click.self="handleCancel">
+        <div class="confirm-modal" @click.stop>
+          <div class="modal-icon" :class="variant">
+            <svg v-if="variant === 'danger'" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M5 6v12a2 2 0 002 2h10a2 2 0 002-2V6m-4 0V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
 
-        <div class="modal-content">
-          <h3>{{ title }}</h3>
-          <p>{{ message }}</p>
-        </div>
+          <div class="modal-content">
+            <h3>{{ title }}</h3>
+            <p>{{ message }}</p>
+          </div>
 
-        <div class="modal-actions">
-          <button @click="handleCancel" class="btn-cancel">Cancel</button>
-          <button @click="handleConfirm" class="btn-confirm" :class="variant">
-            {{ confirmText }}
-          </button>
+          <div class="modal-actions">
+            <button @click="handleCancel" class="btn-cancel">Cancel</button>
+            <button @click="handleConfirm" class="btn-confirm" :class="variant">
+              {{ confirmText }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
 
 interface Props {
   title?: string
@@ -50,6 +52,36 @@ const emit = defineEmits<{
 }>()
 
 const isOpen = ref(false)
+
+// Handle escape key
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && isOpen.value) {
+    handleCancel()
+  }
+}
+
+// Prevent body scroll when modal is open
+watch(isOpen, (newVal) => {
+  if (newVal) {
+    document.body.style.overflow = 'hidden'
+    // Close any open context menus by dispatching a click event
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    // Add escape key listener
+    document.addEventListener('keydown', handleEscape)
+  } else {
+    document.body.style.overflow = ''
+    // Remove escape key listener
+    document.removeEventListener('keydown', handleEscape)
+  }
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (isOpen.value) {
+    document.body.style.overflow = ''
+    document.removeEventListener('keydown', handleEscape)
+  }
+})
 
 const open = () => {
   isOpen.value = true
@@ -83,8 +115,9 @@ defineExpose({ open, close })
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 99999;
   padding: 20px;
+  backdrop-filter: blur(2px);
 }
 
 .confirm-modal {

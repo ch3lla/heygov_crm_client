@@ -1,7 +1,8 @@
 <template>
-  <Transition name="modal">
-    <div v-if="contactStore.showContactDetail && contactStore.selectedContact" class="modal-backdrop" @click="contactStore.closeContactDetail()">
-      <div class="modal-card" @click.stop>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="contactStore.showContactDetail && contactStore.selectedContact" class="modal-backdrop" @click.self="contactStore.closeContactDetail()">
+        <div class="modal-card" @click.stop>
         <button @click="contactStore.closeContactDetail()" class="close-btn">×</button>
         
         <div class="modal-header">
@@ -194,12 +195,13 @@
         variant="danger"
         @confirm="confirmDelete"
       />
-    </div>
-  </Transition>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onUnmounted } from 'vue'
 import { useContactStore } from '@/stores/contacts'
 import { toast } from '@/utils/toast'
 import ConfirmModal from '@/components/ConfirmModal.vue'
@@ -207,6 +209,43 @@ import ConfirmModal from '@/components/ConfirmModal.vue'
 const contactStore = useContactStore()
 const confirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const isEditMode = ref(false)
+
+// Handle escape key
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && contactStore.showContactDetail) {
+    // If in edit mode, cancel edit, otherwise close modal
+    if (isEditMode.value) {
+      handleCancel()
+    } else {
+      contactStore.closeContactDetail()
+    }
+  }
+}
+
+// Prevent body scroll when modal is open
+watch(() => contactStore.showContactDetail, (newVal) => {
+  if (newVal) {
+    document.body.style.overflow = 'hidden'
+    // Close any open context menus
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    // Add escape key listener
+    document.addEventListener('keydown', handleEscape)
+  } else {
+    document.body.style.overflow = ''
+    // Reset edit mode when closing
+    isEditMode.value = false
+    // Remove escape key listener
+    document.removeEventListener('keydown', handleEscape)
+  }
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (contactStore.showContactDetail) {
+    document.body.style.overflow = ''
+    document.removeEventListener('keydown', handleEscape)
+  }
+})
 
 // Form data for editing
 const editForm = ref({
@@ -340,8 +379,9 @@ const confirmDelete = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 10000;
   padding: 20px;
+  backdrop-filter: blur(2px);
 }
 
 .modal-card {
