@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import apiClient from '@/api/index';
 import router from '@/router';
 import type { IUser } from '@/types';
+import { useAssistantStore } from '@/stores/assistant';
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token') ?? null);
@@ -86,6 +87,8 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null;
         localStorage.removeItem('token');
         sessionStorage.removeItem('assistant-chat');
+        const assistantStore = useAssistantStore();
+        assistantStore.clearMessages();
         closeProfile();
         router.push('/login');
     };
