@@ -104,11 +104,20 @@ const calculatePosition = () => {
   menuPosition.value = { top, left }
 }
 
+// Custom event to close all other context menus
+const CLOSE_OTHER_MENUS_EVENT = 'close-other-context-menus'
+
 const toggleMenu = () => {
   if (!isMenuOpen.value) {
+    // Close all other menus first
+    window.dispatchEvent(new CustomEvent(CLOSE_OTHER_MENUS_EVENT, { 
+      detail: { source: menuRef.value } 
+    }))
     calculatePosition()
+    isMenuOpen.value = true
+  } else {
+    isMenuOpen.value = false
   }
-  isMenuOpen.value = !isMenuOpen.value
 }
 
 const handleRestore = () => {
@@ -135,8 +144,16 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
+const handleCloseOtherMenus = (event: CustomEvent) => {
+  // Close this menu if it's not the one that triggered the event
+  if (event.detail?.source !== menuRef.value && isMenuOpen.value) {
+    isMenuOpen.value = false
+  }
+}
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  window.addEventListener(CLOSE_OTHER_MENUS_EVENT, handleCloseOtherMenus as EventListener)
   window.addEventListener('scroll', () => {
     if (isMenuOpen.value) {
       calculatePosition()
@@ -151,6 +168,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener(CLOSE_OTHER_MENUS_EVENT, handleCloseOtherMenus as EventListener)
 })
 </script>
 

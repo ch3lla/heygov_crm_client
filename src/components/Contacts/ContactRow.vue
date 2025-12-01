@@ -22,10 +22,10 @@
       
       <div v-if="contact.notes" class="notes small">{{ truncatedNotes }}</div>
       <div v-else class="notes small">-</div>
+    </div>
 
-      <div class="menu-container" @click.stop>
-        <ContactContextMenu @edit="handleEdit" @delete="handleDelete" />
-      </div>
+    <div class="menu-container" @click.stop>
+      <ContactContextMenu @edit="handleEdit" @delete="handleDelete" />
     </div>
 
     <!-- Confirm Delete Modal -->
@@ -141,6 +141,8 @@ const confirmDelete = async () => {
   align-items: center;
   flex: 1;
   cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .avatar-container {
@@ -207,8 +209,9 @@ const confirmDelete = async () => {
 
 .menu-container {
   flex-shrink: 0;
-  width: 40px;
-  text-align: right;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
 /* Responsive Design */

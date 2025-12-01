@@ -1,6 +1,5 @@
 import './assets/main.css'
 import 'vercel-toast/css'
-import './assets/toast-custom.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
