@@ -10,7 +10,7 @@
             {{ initials }}
           </div>
           <h2>
-            {{ isEditMode ? 'Edit Contact' : `${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName}` }}
+            {{ isEditMode ? 'Edit Contact' : `${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName ?? ""}` }}
           </h2>
           <div v-if="isEditMode" class="edit-badge">Editing</div>
         </div>
@@ -190,7 +190,7 @@
         v-if="contactStore.selectedContact"
         ref="confirmModal"
         title="Move to Trash"
-        :message="`Are you sure you want to move ${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName} to trash?`"
+        :message="`Are you sure you want to move ${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName ?? ''} to trash?`"
         confirm-text="Move to Trash"
         variant="danger"
         @confirm="confirmDelete"
@@ -346,7 +346,7 @@ const confirmDelete = async () => {
   if (!contactStore.selectedContact) return
   
   const contactId = contactStore.selectedContact.id
-  const contactName = `${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName}`
+  const contactName = `${contactStore.selectedContact.firstName} ${contactStore.selectedContact.lastName ?? ""}`
   
   contactStore.closeContactDetail()
   
