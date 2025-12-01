@@ -5,7 +5,6 @@ import { useAuthStore } from '@/stores/auth'
 // top-level views (lazy-loaded)
 const ContactsView = () => import('@/views/ContactsView.vue')
 const ContactAddView = () => import('@/views/Contacts/ContactAdd.vue')
-const ContactDetailView = () => import('@/views/Contacts/ContactDetail.vue')
 const LoginView = () => import('@/views/LoginView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
 const NotFound = () => import('@/views/NotFound.vue')
@@ -36,13 +35,6 @@ const router = createRouter({
       path: '/add',
       name: 'contact-add',
       component: ContactAddView,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/:id',
-      name: 'contact-detail',
-      component: ContactDetailView,
-      props: true,
       meta: { requiresAuth: true }
     },
     {
