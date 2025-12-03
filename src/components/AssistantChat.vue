@@ -174,7 +174,7 @@ const sendMessage = async (content?: string) => {
       query: messageText
     })
 
-    console.log(response.data)
+    //console.log(response.data)
     // Add assistant response
     if (response.data.status === 'Success' && (response.data.data?.message?.reply || typeof response.data.data?.message === 'string' && response.data.data?.message)) {
       const replyContent = typeof response.data.data?.message === 'string' 
