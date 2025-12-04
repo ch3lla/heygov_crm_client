@@ -8,22 +8,22 @@
     <form class="card" @submit.prevent="create">
       <div class="field">
         <label>First Name</label>
-        <input v-model="form.firstName" required />
+        <input v-model="form.firstName" @input="stripSpaces('firstName', $event)" required />
       </div>
 
       <div class="field">
         <label>Last Name</label>
-        <input v-model="form.lastName" required />
+        <input v-model="form.lastName" @input="stripSpaces('lastName', $event)" required />
       </div>
 
       <div class="field">
         <label>Email</label>
-        <input v-model="form.email" type="email" required />
+        <input v-model="form.email" @input="stripSpaces('email', $event)" type="email" required />
       </div>
 
       <div class="field">
         <label>Phone Number</label>
-        <input v-model="form.phoneNumber" type="tel" />
+        <input v-model="form.phoneNumber" @input="stripSpaces('phoneNumber', $event)" type="tel" />
       </div>
 
       <div class="field">
@@ -62,6 +62,13 @@ const form = reactive({
   company: '',
   notes: ''
 })
+
+function stripSpaces(field: keyof typeof form, event: Event) {
+  const input = event.target as HTMLInputElement
+  const stripped = input.value.replace(/\s/g, '')
+  input.value = stripped
+  form[field] = stripped
+}
 
 async function create() {
   const success = await contactStore.addContact(form)
