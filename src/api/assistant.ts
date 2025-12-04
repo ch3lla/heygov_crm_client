@@ -39,17 +39,13 @@ export interface ChatResponse {
  * @param history - Optional conversation history for context
  * @returns The assistant's response
  * 
- * @example
- * const response = await sendChatMessage('Help me organize my contacts', messages.slice(-10))
  */
 export const sendChatMessage = async (
-  query: string,
-  history?: ChatMessage[]
+  query: string
 ): Promise<ChatResponse> => {
   try {
     const response = await apiClient.post<ChatResponse>('/assistant/query', {
-      query,
-      history
+      query
     })
     return response.data
   } catch (error: any) {
