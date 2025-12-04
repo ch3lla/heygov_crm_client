@@ -8,22 +8,22 @@
     <form class="card" @submit.prevent="create">
       <div class="field">
         <label>First Name</label>
-        <input v-model="form.firstName" @input="stripSpaces('firstName', $event)" required />
+        <input :value="form.firstName" @input="stripSpaces('firstName', $event)" required />
       </div>
 
       <div class="field">
         <label>Last Name</label>
-        <input v-model="form.lastName" @input="stripSpaces('lastName', $event)" required />
+        <input :value="form.lastName" @input="stripSpaces('lastName', $event)" required />
       </div>
 
       <div class="field">
         <label>Email</label>
-        <input v-model="form.email" @input="stripSpaces('email', $event)" type="email" required />
+        <input :value="form.email" @input="stripSpaces('email', $event)" type="email" required />
       </div>
 
       <div class="field">
         <label>Phone Number</label>
-        <input v-model="form.phoneNumber" @input="stripSpaces('phoneNumber', $event)" type="tel" />
+        <input :value="form.phoneNumber" @input="stripSpaces('phoneNumber', $event)" type="tel" />
       </div>
 
       <div class="field">
