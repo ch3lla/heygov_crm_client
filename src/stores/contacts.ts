@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import apiClient from '@/api/index';
 import type { IContact } from "@/types/index";
+import { useAuthStore } from '@/stores/auth';
 
 export const useContactStore = defineStore('contacts', () => {
     const contacts = ref<IContact[]>([]);
@@ -371,6 +372,38 @@ export const useContactStore = defineStore('contacts', () => {
         }
     };
 
+    // Real-time updates using SSE
+    const realTimeUpdatesUsingSSE = () => {
+        const authStore = useAuthStore();
+        if (!authStore.token) return;
+
+        const eventSource = new EventSource(`${import.meta.env.VITE_SERVER_URL}/sse/events?token=${authStore.token}`);
+        eventSource.onmessage = (event) => {
+            const { type, data } = JSON.parse(event.data);
+            switch (type) {
+                case 'ADD':
+                    contacts.value.push(data);
+                    console.log('Contact added:', data);
+                    break;
+                case 'UPDATE':
+                    contacts.value = contacts.value.map(contact => contact.id === data.id ? data : contact);
+                    console.log('Contact updated:', data);
+                    break;
+                case 'DELETE':
+                    contacts.value = contacts.value.filter(contact => contact.id !== data.id);
+                    console.log('Contact deleted:', data);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        eventSource.onerror = (event) => {
+            console.error('EventSource failed:', event);
+            eventSource.close();
+        };
+    }
+
     return {
     contacts,
     loading,
@@ -411,7 +444,9 @@ export const useContactStore = defineStore('contacts', () => {
     clearTrashSelection,
     fetchTrash,
     restoreContact,
-    bulkRestoreFromTrash
+    bulkRestoreFromTrash,
+    // SSE
+    realTimeUpdatesUsingSSE,
     };
 }, 
 {

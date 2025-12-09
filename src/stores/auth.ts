@@ -4,6 +4,7 @@ import apiClient from '@/api/index';
 import router from '@/router';
 import type { IUser } from '@/types';
 import { useAssistantStore } from '@/stores/assistant';
+import { useContactStore } from '@/stores/contacts';
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token') ?? null);
@@ -55,6 +56,8 @@ export const useAuthStore = defineStore('auth', () => {
                 token.value = data.data;
                 localStorage.setItem('token', data.data);
                 await fetchUserProfile();
+                const contactStore = useContactStore();
+                contactStore.realTimeUpdatesUsingSSE();
                 router.push('/');
                 return { success: true, error: null };
             }
@@ -72,6 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
                 token.value = data.data;
                 localStorage.setItem('token', data.data);
                 await fetchUserProfile();
+                const contactStore = useContactStore();
+                contactStore.realTimeUpdatesUsingSSE();
                 router.push('/');
                 return { success: true, error: null };
             }
